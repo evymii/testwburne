@@ -33,6 +33,13 @@ migrate_working_dir/
 .pub/
 /build/
 
+# Local secrets and signing keys
+.env
+.env.*
+*.jks
+*.keystore
+android/key.properties
+
 # Symbolication related
 app.*.symbols
 
