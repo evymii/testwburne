@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../theme/my_colors.dart';
+
 enum ProgramCategory {
-  wrestling('Buh'),
-  archery('Harvaa'),
-  knuckleBone('Shagai'),
-  horseRacing('Mori');
+  wrestling('Бөх'),
+  archery('Сур'),
+  knuckleBone('Шагай'),
+  horseRacing('Морь');
 
   const ProgramCategory(this.label);
   final String label;
@@ -45,49 +47,49 @@ class _ProgramScreenState extends State<ProgramScreen> {
 
   static const List<ProgramItem> _programItems = [
     ProgramItem(
-      title: 'Opening Wrestling Round',
+      title: 'Бөхийн нээлтийн даваа',
       time: '07/11 09:00',
-      location: 'Central Stadium',
+      location: 'Төв цэнгэлдэх',
       category: ProgramCategory.wrestling,
     ),
     ProgramItem(
-      title: 'Wrestling Round 2',
+      title: 'Бөхийн 2-р даваа',
       time: '07/11 14:30',
-      location: 'Central Stadium',
+      location: 'Төв цэнгэлдэх',
       category: ProgramCategory.wrestling,
     ),
     ProgramItem(
-      title: 'Archery Qualifier',
+      title: 'Сурын урьдчилсан харваа',
       time: '07/11 10:00',
-      location: 'Archery Field',
+      location: 'Сурын талбай',
       category: ProgramCategory.archery,
     ),
     ProgramItem(
-      title: 'Archery Final',
+      title: 'Сурын финал',
       time: '07/12 16:00',
-      location: 'Archery Field',
+      location: 'Сурын талбай',
       category: ProgramCategory.archery,
     ),
     ProgramItem(
-      title: 'Shagai Round',
+      title: 'Шагайн тойрог',
       time: '07/12 11:00',
-      location: 'Shagai Arena',
+      location: 'Шагайн асар',
       category: ProgramCategory.knuckleBone,
     ),
     ProgramItem(
-      title: 'Shagai Championship',
+      title: 'Шагайн аварга',
       time: '07/13 12:30',
-      location: 'Shagai Arena',
+      location: 'Шагайн асар',
       category: ProgramCategory.knuckleBone,
     ),
     ProgramItem(
-      title: 'Adult Horse Race',
+      title: 'Их насны морь',
       time: '07/11 08:30',
       location: 'Khui Doloon Hudag',
       category: ProgramCategory.horseRacing,
     ),
     ProgramItem(
-      title: 'Soyolon Horse Race',
+      title: 'Соёолон морь',
       time: '07/12 08:30',
       location: 'Khui Doloon Hudag',
       category: ProgramCategory.horseRacing,
@@ -97,7 +99,7 @@ class _ProgramScreenState extends State<ProgramScreen> {
   void _handleTap(ProgramItem item) {
     if (!widget.isAuthenticated) {
       widget.onRequireAuth(
-        'Please authenticate first to open program details.',
+        'Эхлээд баталгаажаад хөтөлбөрийн мэдээлэл үзнэ үү.',
       );
       return;
     }
@@ -116,12 +118,19 @@ class _ProgramScreenState extends State<ProgramScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Naadam Program',
+            'Наадмын хөтөлбөр',
             style: TextStyle(
               fontFamily: 'Raleway',
               fontWeight: FontWeight.w800,
               fontSize: 24,
-              color: Color(0xFF22332D),
+              color: MyColors.textPrimary,
+              shadows: [
+                Shadow(
+                  color: MyColors.primaryBlue,
+                  blurRadius: 4,
+                  offset: Offset(0, 1),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 10),
@@ -129,14 +138,14 @@ class _ProgramScreenState extends State<ProgramScreen> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: MyColors.surface,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: const Color(0xFFD9DCCE)),
+                border: Border.all(color: MyColors.borderNeutral),
                 boxShadow: const [
                   BoxShadow(
-                    color: Color(0x14000000),
-                    blurRadius: 12,
-                    offset: Offset(0, 4),
+                    color: MyColors.shadowSoft,
+                    blurRadius: 10,
+                    offset: Offset(0, 3),
                   ),
                 ],
               ),
@@ -269,9 +278,10 @@ class _CategoryChip extends StatelessWidget {
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           backgroundColor:
-              selected ? const Color(0xFFFADDD1) : const Color(0xFFF8F8F6),
+              selected ? MyColors.blueSoft : MyColors.surfaceMuted,
           side: BorderSide(
-            color: selected ? const Color(0xFFE09A7E) : const Color(0xFFD5D8CB),
+            color:
+                selected ? MyColors.primaryBlue : MyColors.borderNeutral,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -281,12 +291,25 @@ class _CategoryChip extends StatelessWidget {
         onPressed: onTap,
         child: Text(
           label,
+          maxLines: 1,
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Raleway',
             fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-            color: const Color(0xFF2B3532),
+            color: MyColors.textPrimary,
             fontSize: compact ? 13 : 14,
+            shadows:
+                selected
+                    ? const [
+                      Shadow(
+                        color: MyColors.primaryBlue,
+                        blurRadius: 3,
+                        offset: Offset(0, 1),
+                      ),
+                    ]
+                    : null,
           ),
         ),
       ),
@@ -327,12 +350,12 @@ class _ProgramCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFFFFFFF), Color(0xFFF7FAF8)],
+          colors: [MyColors.surface, MyColors.surfaceMuted],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFDDE2D8)),
+        border: Border.all(color: MyColors.borderNeutral),
       ),
       child: Row(
         children: [
@@ -340,17 +363,20 @@ class _ProgramCard extends StatelessWidget {
             width: 56,
             padding: const EdgeInsets.symmetric(vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0xFFE8F2ED),
+              color: MyColors.blueSoft,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               item.time.split(' ').last,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontFamily: 'RobotoMono',
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF33574A),
+                color: MyColors.textPrimary,
               ),
             ),
           ),
@@ -361,26 +387,39 @@ class _ProgramCard extends StatelessWidget {
               children: [
                 Text(
                   item.title,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontFamily: 'Raleway',
                     fontWeight: FontWeight.w800,
                     fontSize: 15,
-                    color: Color(0xFF26342F),
+                    color: MyColors.textPrimary,
+                    shadows: [
+                      Shadow(
+                        color: MyColors.primaryBlue,
+                        blurRadius: 2,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '${item.time} - ${item.location}',
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontFamily: 'RobotoMono',
                     fontSize: 11,
-                    color: Color(0xFF66726D),
+                    color: MyColors.textSecondary,
                   ),
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: Color(0xFF3A4C45)),
+          const Icon(Icons.chevron_right, color: MyColors.primaryBlue),
         ],
       ),
     );

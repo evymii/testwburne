@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../theme/my_colors.dart';
+
 enum VenueKind {
   toilet,
   food,
@@ -10,11 +12,11 @@ enum VenueKind {
   String get label {
     switch (this) {
       case VenueKind.toilet:
-        return 'Toilet';
+        return '00';
       case VenueKind.food:
-        return 'Food';
+        return 'Хоол';
       case VenueKind.activity:
-        return 'Activity';
+        return 'Үйл ажиллагаа';
     }
   }
 
@@ -23,9 +25,9 @@ enum VenueKind {
       case VenueKind.toilet:
         return '00';
       case VenueKind.food:
-        return 'FOOD';
+        return 'ХООЛ';
       case VenueKind.activity:
-        return 'ACT';
+        return 'ҮЙЛ';
     }
   }
 
@@ -43,11 +45,11 @@ enum VenueKind {
   Color get color {
     switch (this) {
       case VenueKind.toilet:
-        return const Color(0xFF4D8CCF);
+        return MyColors.primaryBlue;
       case VenueKind.food:
-        return const Color(0xFFBC6C25);
+        return MyColors.attentionYellow;
       case VenueKind.activity:
-        return const Color(0xFF2D8A62);
+        return MyColors.successGreen;
     }
   }
 }
@@ -82,52 +84,52 @@ class MapScreen extends StatelessWidget {
 
   static const List<VenueSpot> _spots = [
     VenueSpot(
-      name: 'North Gate Toilet',
+      name: 'Хойд хаалганы 00',
       kind: VenueKind.toilet,
       x: 0.18,
       y: 0.18,
-      note: 'Near gate A entrance',
+      note: 'А хаалганы дэргэд',
     ),
     VenueSpot(
-      name: 'East Side Toilet',
+      name: 'Зүүн талын 00',
       kind: VenueKind.toilet,
       x: 0.82,
       y: 0.46,
-      note: 'Behind east tribune',
+      note: 'Зүүн трибун ард',
     ),
     VenueSpot(
-      name: 'Food Court A',
+      name: 'Хоолны хэсэг A',
       kind: VenueKind.food,
       x: 0.28,
       y: 0.70,
-      note: 'Main quick meal area',
+      note: 'Түргэн хоолны гол бүс',
     ),
     VenueSpot(
-      name: 'Food Street B',
+      name: 'Хоолны гудамж B',
       kind: VenueKind.food,
       x: 0.64,
       y: 0.72,
-      note: 'Traditional dishes',
+      note: 'Үндэсний хоол',
     ),
     VenueSpot(
-      name: 'Kids Activity Zone',
+      name: 'Хүүхдийн бүс',
       kind: VenueKind.activity,
       x: 0.52,
       y: 0.34,
-      note: 'Family friendly games',
+      note: 'Гэр бүлийн тоглоом',
     ),
     VenueSpot(
-      name: 'Cultural Stage',
+      name: 'Соёлын тайз',
       kind: VenueKind.activity,
       x: 0.40,
       y: 0.50,
-      note: 'Dance and music program',
+      note: 'Бүжиг, хөгжмийн үзүүлбэр',
     ),
   ];
 
   void _handleSpotTap(VenueSpot spot) {
     if (!isAuthenticated) {
-      onRequireAuth('Please authenticate first to view location details.');
+      onRequireAuth('Эхлээд баталгаажаад байршлын мэдээлэл үзнэ үү.');
       return;
     }
     onSpotTap(spot);
@@ -151,11 +153,11 @@ class MapScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(28),
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFFBF8EF), Color(0xFFF3F8F5)],
+                  colors: [MyColors.surface, MyColors.surfaceMuted],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                border: Border.all(color: const Color(0xFFD9DCCE)),
+                border: Border.all(color: MyColors.borderNeutral),
               ),
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -195,21 +197,21 @@ class _MapHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Tuv Tsengeldekh Hureelen',
+                'Төв цэнгэлдэх хүрээлэн',
                 style: TextStyle(
                   fontFamily: 'Raleway',
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF22332D),
+                  color: MyColors.textPrimary,
                 ),
               ),
               SizedBox(height: 2),
               Text(
-                'Tap map points to open venue details.',
+                'Цэг дээр дарж дэлгэрэнгүйг үзнэ.',
                 style: TextStyle(
                   fontFamily: 'RobotoMono',
                   fontSize: 12,
-                  color: Color(0xFF5E6B65),
+                  color: MyColors.textSecondary,
                 ),
               ),
             ],
@@ -220,23 +222,23 @@ class _MapHeader extends StatelessWidget {
           decoration: BoxDecoration(
             color:
                 isAuthenticated
-                    ? const Color(0xFFDDF3E7)
-                    : const Color(0xFFFCE8E8),
+                    ? MyColors.greenSoft
+                    : MyColors.redSoft,
             borderRadius: BorderRadius.circular(30),
             border: Border.all(
               color:
                   isAuthenticated
-                      ? const Color(0xFF8CC8A8)
-                      : const Color(0xFFE8A1A1),
+                      ? MyColors.successGreen
+                      : MyColors.alertRed,
             ),
           ),
           child: Text(
-            isAuthenticated ? 'Unlocked' : 'Locked',
+            isAuthenticated ? 'Нээгдсэн' : 'Түгжээтэй',
             style: TextStyle(
               color:
                   isAuthenticated
-                      ? const Color(0xFF1E7A51)
-                      : const Color(0xFF9A3E3E),
+                      ? const Color(0xFF2D7443)
+                      : const Color(0xFFA84444),
               fontFamily: 'RobotoMono',
               fontWeight: FontWeight.w700,
               fontSize: 11,
@@ -385,7 +387,7 @@ class _LegendButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
-          backgroundColor: kind.color.withValues(alpha: 0.11),
+          backgroundColor: kind.color.withValues(alpha: 0.09),
           side: BorderSide(color: kind.color.withValues(alpha: 0.45)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -442,7 +444,7 @@ class _VenueMapCanvas extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(22),
       child: Container(
-        decoration: const BoxDecoration(color: Color(0xFFEFF2EC)),
+        decoration: const BoxDecoration(color: MyColors.surfaceMuted),
         child: LayoutBuilder(
           builder: (context, constraints) {
             final mapWidth = constraints.maxWidth;
@@ -499,7 +501,7 @@ class _StadiumPainter extends CustomPainter {
     final backgroundPaint =
         Paint()
           ..shader = const LinearGradient(
-            colors: [Color(0xFFE2EBE5), Color(0xFFF7F8F4)],
+            colors: [MyColors.surfaceMuted, MyColors.baseBackground],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
@@ -518,7 +520,7 @@ class _StadiumPainter extends CustomPainter {
       venueRect,
       const Radius.circular(28),
     );
-    final venueFillPaint = Paint()..color = const Color(0xFFE9E4D8);
+    final venueFillPaint = Paint()..color = const Color(0xFFFDFDF8);
     canvas.drawRRect(venueBorder, venueFillPaint);
 
     final ringRect = Rect.fromLTWH(
@@ -531,7 +533,7 @@ class _StadiumPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 34
-          ..color = const Color(0xFFC7D2CB);
+          ..color = const Color(0xFFE0E7DF);
     canvas.drawOval(ringRect, ringPaint);
 
     final fieldRect = Rect.fromLTWH(
@@ -543,7 +545,7 @@ class _StadiumPainter extends CustomPainter {
     final fieldPaint =
         Paint()
           ..shader = const LinearGradient(
-            colors: [Color(0xFFCEE6D8), Color(0xFFA8D1BE)],
+            colors: [MyColors.blueSoft, Color(0xFFD8F3E5)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ).createShader(fieldRect);
@@ -553,14 +555,14 @@ class _StadiumPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.6
-          ..color = const Color(0xFF3D4E47);
+          ..color = MyColors.textSecondary;
     canvas.drawRRect(venueBorder, borderPaint);
 
     final pathPaint =
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2
-          ..color = const Color(0x77909D95);
+          ..color = const Color(0x556D7A74);
     canvas.drawLine(
       Offset(size.width * 0.20, size.height * 0.42),
       Offset(size.width * 0.80, size.height * 0.42),
@@ -585,17 +587,17 @@ class _YouAreHerePill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: MyColors.surface,
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: const Color(0xFF9AB1A6)),
+        border: Border.all(color: MyColors.attentionYellow),
       ),
       child: const Text(
-        'You are here',
+        'Таны байрлал',
         style: TextStyle(
           fontFamily: 'RobotoMono',
           fontWeight: FontWeight.w700,
           fontSize: 10,
-          color: Color(0xFF38534A),
+          color: MyColors.textPrimary,
         ),
       ),
     );
@@ -664,10 +666,10 @@ class _SpotListPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.70),
+        decoration: BoxDecoration(
+          color: MyColors.surface.withValues(alpha: 0.80),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFDBDFD3)),
+          border: Border.all(color: MyColors.borderNeutral),
       ),
       child: Padding(
         padding: const EdgeInsets.all(10),
@@ -699,9 +701,9 @@ class _SpotMiniCard extends StatelessWidget {
         width: 170,
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: MyColors.surface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFDFE3D9)),
+          border: Border.all(color: MyColors.borderNeutral),
         ),
         child: Row(
           children: [
@@ -735,7 +737,7 @@ class _SpotMiniCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'RobotoMono',
                       fontSize: 10,
-                      color: Color(0xFF64706A),
+                      color: MyColors.textSecondary,
                     ),
                   ),
                 ],

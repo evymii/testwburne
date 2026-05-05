@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/my_colors.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
     super.key,
@@ -62,17 +64,18 @@ class _HeaderCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
         gradient: const LinearGradient(
-          colors: [Color(0xFF204E43), Color(0xFF356D58)],
+          colors: [MyColors.surface, MyColors.surfaceMuted],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x33204E43),
-            blurRadius: 16,
-            offset: Offset(0, 8),
+            color: MyColors.shadowSoft,
+            blurRadius: 12,
+            offset: Offset(0, 5),
           ),
         ],
+        border: Border.all(color: MyColors.borderNeutral),
       ),
       child: Row(
         children: [
@@ -81,19 +84,26 @@ class _HeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Naadam Access',
+                  'Наадам нэвтрэх',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: MyColors.textPrimary,
                     fontFamily: 'Raleway',
                     fontWeight: FontWeight.w800,
                     fontSize: 24,
+                    shadows: [
+                      Shadow(
+                        color: MyColors.primaryBlue,
+                        blurRadius: 4,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Your pass, ticket settings, and group management.',
+                  'Тасалбар, тохиргоо, бүлгийн удирдлага.',
                   style: TextStyle(
-                    color: Color(0xFFE2F1EC),
+                    color: MyColors.textSecondary,
                     fontFamily: 'RobotoMono',
                     fontSize: 12,
                     height: 1.3,
@@ -106,16 +116,16 @@ class _HeaderCard extends StatelessWidget {
             width: 84,
             height: 84,
             decoration: BoxDecoration(
-              color: const Color(0x1AFFFFFF),
+              color: MyColors.blueSoft,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0x55FFFFFF)),
+              border: Border.all(color: MyColors.primaryBlue),
             ),
             child: Center(
               child: Text(
-                '$daysUntilNaadam\ndays',
+                '$daysUntilNaadam\nхоног',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: MyColors.textPrimary,
                   fontFamily: 'RobotoMono',
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
@@ -140,9 +150,9 @@ class _LockedPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: MyColors.surface,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0xFFDCD9D0)),
+        border: Border.all(color: MyColors.borderNeutral),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -156,28 +166,28 @@ class _LockedPanel extends StatelessWidget {
               ),
             ),
             child: const Center(
-              child: Icon(Icons.face_3, size: 76, color: Color(0xFF204E43)),
+              child: Icon(Icons.face_3, size: 76, color: MyColors.primaryBlue),
             ),
           ),
           const SizedBox(height: 16),
           const Text(
-            'Biometric scan is required to continue.',
+            'Үргэлжлүүлэхийн тулд баталгаажна уу.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Raleway',
               fontWeight: FontWeight.w700,
               fontSize: 18,
-              color: Color(0xFF20352F),
+              color: MyColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           const Text(
-            'Face ID / fingerprint check unlocks ticket and group actions.',
+            'Face ID эсвэл хурууны хээ шалгаад нээнэ.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'RobotoMono',
               fontSize: 12,
-              color: Color(0xFF5D6A66),
+              color: MyColors.textSecondary,
               height: 1.4,
             ),
           ),
@@ -185,7 +195,7 @@ class _LockedPanel extends StatelessWidget {
           FilledButton.icon(
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(52),
-              backgroundColor: const Color(0xFF204E43),
+              backgroundColor: MyColors.primaryBlue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
@@ -193,7 +203,7 @@ class _LockedPanel extends StatelessWidget {
             onPressed: onBiometricScan,
             icon: const Icon(Icons.verified_user),
             label: const Text(
-              'Biometric Scan',
+              'Биометр шалгах',
               style: TextStyle(
                 fontFamily: 'RobotoMono',
                 fontWeight: FontWeight.w700,
@@ -222,9 +232,9 @@ class _AuthenticatedPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: MyColors.surface,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0xFFDCD9D0)),
+        border: Border.all(color: MyColors.borderNeutral),
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
@@ -237,7 +247,7 @@ class _AuthenticatedPanel extends StatelessWidget {
               children: [
                 Expanded(
                   child: _MiniStatCard(
-                    title: 'Ticket',
+                    title: 'Тасалбар',
                     value: 'VIP',
                     icon: Icons.workspace_premium_outlined,
                   ),
@@ -245,8 +255,8 @@ class _AuthenticatedPanel extends StatelessWidget {
                 SizedBox(width: 8),
                 Expanded(
                   child: _MiniStatCard(
-                    title: 'Group',
-                    value: '3 Members',
+                    title: 'Бүлэг',
+                    value: '3 гишүүн',
                     icon: Icons.groups_2_outlined,
                   ),
                 ),
@@ -254,62 +264,62 @@ class _AuthenticatedPanel extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'Quick Actions',
+              'Шуурхай үйлдэл',
               style: TextStyle(
                 fontFamily: 'Raleway',
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF20352F),
+                color: MyColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             _ActionTile(
-              title: 'Ticket Type',
-              subtitle: 'Switch between Standard and VIP access.',
+              title: 'Тасалбарын төрөл',
+              subtitle: 'Энгийн эсвэл VIP сонгох',
               icon: Icons.confirmation_num_outlined,
               onTap: onTicketTypeTap,
             ),
             const SizedBox(height: 10),
             _ActionTile(
-              title: 'Create Group',
-              subtitle: 'Invite friends and sync plans for Naadam days.',
+              title: 'Бүлэг үүсгэх',
+              subtitle: 'Найзуудаа уриад төлөвлөгөөгөө нэгтгэх',
               icon: Icons.group_add_outlined,
               onTap: onCreateGroupTap,
             ),
             const SizedBox(height: 16),
             const Text(
-              'Today Plan',
+              'Өнөөдрийн төлөвлөгөө',
               style: TextStyle(
                 fontFamily: 'Raleway',
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF20352F),
+                color: MyColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             const _PlanRow(
               time: '09:00',
-              title: 'Opening Ceremony',
-              place: 'Main Arena',
+              title: 'Нээлтийн ёслол',
+              place: 'Төв талбай',
             ),
             const _PlanRow(
               time: '11:30',
-              title: 'Food Break',
-              place: 'Food Court A',
+              title: 'Хоолны завсарлага',
+              place: 'Хоолны хэсэг A',
             ),
             const _PlanRow(
               time: '14:30',
-              title: 'Wrestling Round 2',
-              place: 'Central Stadium',
+              title: 'Бөхийн 2-р даваа',
+              place: 'Төв цэнгэлдэх',
             ),
             const SizedBox(height: 8),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton.icon(
                 onPressed: onLogoutTap,
-                icon: const Icon(Icons.lock_outline),
+                icon: const Icon(Icons.lock_outline, color: MyColors.alertRed),
                 label: const Text(
-                  'Lock Session',
+                  'Сешн түгжих',
                   style: TextStyle(
                     fontFamily: 'RobotoMono',
                     fontWeight: FontWeight.w700,
@@ -334,23 +344,20 @@ class _PassCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF233B66), Color(0xFF2D5A8A)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: MyColors.blueSoft,
+        border: Border.all(color: MyColors.primaryBlue),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.verified, color: Color(0xFFE9F2FF), size: 18),
+              Icon(Icons.verified, color: MyColors.primaryBlue, size: 18),
               SizedBox(width: 6),
               Text(
-                'EVENT PASS',
+                'АРГА ХЭМЖЭЭНИЙ ЭРХ',
                 style: TextStyle(
-                  color: Color(0xFFE9F2FF),
+                  color: MyColors.primaryBlue,
                   fontFamily: 'RobotoMono',
                   fontWeight: FontWeight.w700,
                   fontSize: 11,
@@ -362,7 +369,7 @@ class _PassCard extends StatelessWidget {
           Text(
             'B. Bat-Erdene',
             style: TextStyle(
-              color: Colors.white,
+              color: MyColors.textPrimary,
               fontFamily: 'Raleway',
               fontWeight: FontWeight.w800,
               fontSize: 21,
@@ -370,9 +377,9 @@ class _PassCard extends StatelessWidget {
           ),
           SizedBox(height: 4),
           Text(
-            'NAADAM 2026 • Access Level: VIP',
+            'НААДАМ 2026 • Түвшин: VIP',
             style: TextStyle(
-              color: Color(0xFFCFE3FF),
+              color: MyColors.textSecondary,
               fontFamily: 'RobotoMono',
               fontWeight: FontWeight.w700,
               fontSize: 11,
@@ -400,9 +407,9 @@ class _MiniStatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F7F6),
+        color: MyColors.surfaceMuted,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFDEE5E2)),
+        border: Border.all(color: MyColors.borderNeutral),
       ),
       child: Row(
         children: [
@@ -410,10 +417,10 @@ class _MiniStatCard extends StatelessWidget {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: const Color(0xFFE1ECE8),
+              color: MyColors.blueSoft,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, size: 16, color: const Color(0xFF204E43)),
+            child: Icon(icon, size: 16, color: MyColors.primaryBlue),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -422,14 +429,20 @@ class _MiniStatCard extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontFamily: 'RobotoMono',
                     fontSize: 10,
-                    color: Color(0xFF67706D),
+                    color: MyColors.textSecondary,
                   ),
                 ),
                 Text(
                   value,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontFamily: 'Raleway',
                     fontWeight: FontWeight.w700,
@@ -467,8 +480,8 @@ class _ActionTile extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: const Color(0xFFF5F7F6),
-          border: Border.all(color: const Color(0xFFDEE5E2)),
+          color: MyColors.surfaceMuted,
+            border: Border.all(color: MyColors.borderNeutral),
         ),
         child: Row(
           children: [
@@ -476,10 +489,10 @@ class _ActionTile extends StatelessWidget {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: const Color(0xFFDFECE8),
+                color: MyColors.blueSoft,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: const Color(0xFF204E43)),
+              child: Icon(icon, color: MyColors.primaryBlue),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -488,25 +501,38 @@ class _ActionTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontFamily: 'Raleway',
                       fontWeight: FontWeight.w700,
                       fontSize: 16,
+                      shadows: [
+                        Shadow(
+                          color: MyColors.primaryBlue,
+                          blurRadius: 3,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontFamily: 'RobotoMono',
                       fontSize: 11,
-                      color: Color(0xFF67706D),
+                      color: MyColors.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: Color(0xFF204E43)),
+            const Icon(Icons.chevron_right, color: MyColors.primaryBlue),
           ],
         ),
       ),
@@ -535,7 +561,7 @@ class _PlanRow extends StatelessWidget {
             width: 56,
             padding: const EdgeInsets.symmetric(vertical: 7),
             decoration: BoxDecoration(
-              color: const Color(0xFFE7F0EC),
+              color: MyColors.greenSoft,
               borderRadius: BorderRadius.circular(9),
             ),
             child: Text(
@@ -545,7 +571,7 @@ class _PlanRow extends StatelessWidget {
                 fontFamily: 'RobotoMono',
                 fontWeight: FontWeight.w700,
                 fontSize: 11,
-                color: Color(0xFF2E4E43),
+                color: MyColors.textPrimary,
               ),
             ),
           ),
@@ -554,15 +580,18 @@ class _PlanRow extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFF8F9F8),
+                color: MyColors.surfaceMuted,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFE3E7E2)),
+                border: Border.all(color: MyColors.borderNeutral),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontFamily: 'Raleway',
                       fontWeight: FontWeight.w700,
@@ -571,10 +600,13 @@ class _PlanRow extends StatelessWidget {
                   ),
                   Text(
                     place,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontFamily: 'RobotoMono',
                       fontSize: 10,
-                      color: Color(0xFF66726D),
+                      color: MyColors.textSecondary,
                     ),
                   ),
                 ],

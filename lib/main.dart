@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
+import 'theme/my_colors.dart';
 import 'screen/home_screen.dart';
 import 'screen/map_screen.dart';
 import 'screen/program_screen.dart';
@@ -17,20 +18,29 @@ class NaadamApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Naadam Guide',
+      title: 'Наадам хөтөч',
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF204E43)),
-        scaffoldBackgroundColor: const Color(0xFFF3F1EA),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: MyColors.primaryBlue,
+          primary: MyColors.primaryBlue,
+          surface: MyColors.surface,
+          error: MyColors.alertRed,
+        ),
+        scaffoldBackgroundColor: MyColors.baseBackground,
         snackBarTheme: const SnackBarThemeData(
           behavior: SnackBarBehavior.floating,
         ),
         navigationBarTheme: NavigationBarThemeData(
-          backgroundColor: Colors.white,
-          indicatorColor: const Color(0xFFDCECE6),
+          backgroundColor: MyColors.surface,
+          indicatorColor: MyColors.blueSoft,
           labelTextStyle: WidgetStateProperty.resolveWith(
             (states) => TextStyle(
               fontFamily: 'Raleway',
+              color:
+                  states.contains(WidgetState.selected)
+                      ? MyColors.textPrimary
+                      : MyColors.textSecondary,
               fontWeight:
                   states.contains(WidgetState.selected)
                       ? FontWeight.w800
@@ -72,19 +82,19 @@ class _RootShellState extends State<RootShell> {
     try {
       final isSupported = await _localAuthentication.isDeviceSupported();
       if (!isSupported) {
-        _showSnack('This device does not support biometric authentication.');
+        _showSnack('Энэ төхөөрөмж биометр дэмжихгүй байна.');
         return;
       }
 
       didAuthenticate = await _localAuthentication.authenticate(
-        localizedReason: 'Authenticate to unlock Naadam app features.',
+        localizedReason: 'Аппын боломжийг нээхийн тулд баталгаажуулна уу.',
         options: const AuthenticationOptions(
           biometricOnly: false,
           stickyAuth: true,
         ),
       );
     } on PlatformException {
-      _showSnack('Biometric scan failed. Check your device security settings.');
+      _showSnack('Биометр шалгалт амжилтгүй боллоо.');
       return;
     }
 
@@ -96,16 +106,24 @@ class _RootShellState extends State<RootShell> {
       setState(() {
         _isAuthenticated = true;
       });
-      _showSnack('Authentication successful.');
+      _showSnack('Баталгаажлаа.');
     } else {
-      _showSnack('Authentication cancelled.');
+      _showSnack('Цуцаллаа.');
     }
   }
 
   void _showSnack(String message) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ).showSnackBar(
+      SnackBar(
+        backgroundColor: MyColors.surface,
+        content: Text(
+          message,
+          style: const TextStyle(color: MyColors.textPrimary),
+        ),
+      ),
+    );
   }
 
   void _requireAuth(String message) {
@@ -131,7 +149,7 @@ class _RootShellState extends State<RootShell> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Ticket Type',
+                  'Тасалбарын төрөл',
                   style: TextStyle(
                     fontFamily: 'Raleway',
                     fontWeight: FontWeight.w800,
@@ -140,7 +158,7 @@ class _RootShellState extends State<RootShell> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Select the access level that matches your plan.',
+                  'Танд тохирох төрлөө сонгоно уу.',
                   style: TextStyle(
                     fontFamily: 'RobotoMono',
                     fontSize: 12,
@@ -151,8 +169,8 @@ class _RootShellState extends State<RootShell> {
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.confirmation_num_outlined),
-                  title: const Text('Standard'),
-                  subtitle: const Text('General seating'),
+                  title: const Text('Энгийн'),
+                  subtitle: const Text('Ердийн суудал'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => Navigator.pop(context),
                 ),
@@ -160,7 +178,7 @@ class _RootShellState extends State<RootShell> {
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.workspace_premium_outlined),
                   title: const Text('VIP'),
-                  subtitle: const Text('Premium seating and extra services'),
+                  subtitle: const Text('Тусгай суудал, нэмэлт үйлчилгээ'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => Navigator.pop(context),
                 ),
@@ -177,14 +195,14 @@ class _RootShellState extends State<RootShell> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Create Group'),
+          title: const Text('Бүлэг үүсгэх'),
           content: const Text(
-            'Create a group and invite your friends to manage tickets together.',
+            'Найзуудаа уриад тасалбараа хамт удирдаарай.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
+              child: const Text('Хаах'),
             ),
           ],
         );
@@ -202,7 +220,7 @@ class _RootShellState extends State<RootShell> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
+              child: const Text('Хаах'),
             ),
           ],
         );
@@ -220,7 +238,7 @@ class _RootShellState extends State<RootShell> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
+              child: const Text('Хаах'),
             ),
           ],
         );
@@ -266,11 +284,11 @@ class _RootShellState extends State<RootShell> {
           });
         },
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.fingerprint), label: 'Access'),
-          NavigationDestination(icon: Icon(Icons.map_outlined), label: 'Map'),
+          NavigationDestination(icon: Icon(Icons.fingerprint), label: 'Нэвтрэх'),
+          NavigationDestination(icon: Icon(Icons.map_outlined), label: 'Газрын зураг'),
           NavigationDestination(
             icon: Icon(Icons.event_note_outlined),
-            label: 'Program',
+            label: 'Хөтөлбөр',
           ),
         ],
       ),
