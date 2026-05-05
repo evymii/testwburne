@@ -1,122 +1,279 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+
+import 'screen/home_screen.dart';
+import 'screen/map_screen.dart';
+import 'screen/program_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const NaadamApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class NaadamApp extends StatelessWidget {
+  const NaadamApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Naadam Guide',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF204E43)),
+        scaffoldBackgroundColor: const Color(0xFFF3F1EA),
+        snackBarTheme: const SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+        ),
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: Colors.white,
+          indicatorColor: const Color(0xFFDCECE6),
+          labelTextStyle: WidgetStateProperty.resolveWith(
+            (states) => TextStyle(
+              fontFamily: 'Raleway',
+              fontWeight:
+                  states.contains(WidgetState.selected)
+                      ? FontWeight.w800
+                      : FontWeight.w600,
+            ),
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'IO hjsdfhsdfg Counter Demo Home Page'),
+      home: const RootShell(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class RootShell extends StatefulWidget {
+  const RootShell({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<RootShell> createState() => _RootShellState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _RootShellState extends State<RootShell> {
+  final LocalAuthentication _localAuthentication = LocalAuthentication();
+  static const bool _previewAuthenticatedHome = true;
+  int _currentTab = _previewAuthenticatedHome ? 0 : 1;
+  bool _isAuthenticated = _previewAuthenticatedHome;
 
-  void _incrementCounter() {
+  int get _daysUntilNaadam {
+    final now = DateTime.now();
+    var target = DateTime(now.year, 7, 11);
+    if (now.isAfter(target)) {
+      target = DateTime(now.year + 1, 7, 11);
+    }
+    final startOfToday = DateTime(now.year, now.month, now.day);
+    return target.difference(startOfToday).inDays;
+  }
+
+  Future<void> _scanBiometric() async {
+    bool didAuthenticate = false;
+    try {
+      final isSupported = await _localAuthentication.isDeviceSupported();
+      if (!isSupported) {
+        _showSnack('This device does not support biometric authentication.');
+        return;
+      }
+
+      didAuthenticate = await _localAuthentication.authenticate(
+        localizedReason: 'Authenticate to unlock Naadam app features.',
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: true,
+        ),
+      );
+    } on PlatformException {
+      _showSnack('Biometric scan failed. Check your device security settings.');
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    if (didAuthenticate) {
+      setState(() {
+        _isAuthenticated = true;
+      });
+      _showSnack('Authentication successful.');
+    } else {
+      _showSnack('Authentication cancelled.');
+    }
+  }
+
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _requireAuth(String message) {
+    if (_isAuthenticated) {
+      return;
+    }
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _currentTab = 0;
     });
+    _showSnack(message);
+  }
+
+  void _showTicketTypeDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Ticket Type',
+                  style: TextStyle(
+                    fontFamily: 'Raleway',
+                    fontWeight: FontWeight.w800,
+                    fontSize: 22,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Select the access level that matches your plan.',
+                  style: TextStyle(
+                    fontFamily: 'RobotoMono',
+                    fontSize: 12,
+                    color: Color(0xFF66726D),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.confirmation_num_outlined),
+                  title: const Text('Standard'),
+                  subtitle: const Text('General seating'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.pop(context),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.workspace_premium_outlined),
+                  title: const Text('VIP'),
+                  subtitle: const Text('Premium seating and extra services'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCreateGroupDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Create Group'),
+          content: const Text(
+            'Create a group and invite your friends to manage tickets together.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSpotDetail(VenueSpot spot) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(spot.name),
+          content: Text('${spot.kind.label}\n${spot.note}'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showProgramDetail(ProgramItem item) {
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(item.title),
+          content: Text('${item.time}\n${item.location}'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final pages = [
+      HomeScreen(
+        isAuthenticated: _isAuthenticated,
+        daysUntilNaadam: _daysUntilNaadam,
+        onBiometricScan: _scanBiometric,
+        onTicketTypeTap: _showTicketTypeDialog,
+        onCreateGroupTap: _showCreateGroupDialog,
+        onLogoutTap: () {
+          setState(() {
+            _isAuthenticated = false;
+            _currentTab = 0;
+          });
+        },
+      ),
+      MapScreen(
+        isAuthenticated: _isAuthenticated,
+        onRequireAuth: _requireAuth,
+        onSpotTap: _showSpotDetail,
+      ),
+      ProgramScreen(
+        isAuthenticated: _isAuthenticated,
+        onRequireAuth: _requireAuth,
+        onProgramTap: _showProgramDetail,
+      ),
+    ];
+
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      body: SafeArea(child: IndexedStack(index: _currentTab, children: pages)),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentTab,
+        onDestinationSelected: (index) {
+          setState(() {
+            _currentTab = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.fingerprint), label: 'Access'),
+          NavigationDestination(icon: Icon(Icons.map_outlined), label: 'Map'),
+          NavigationDestination(
+            icon: Icon(Icons.event_note_outlined),
+            label: 'Program',
+          ),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pusheahdfgshajd the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
